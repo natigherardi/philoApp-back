@@ -3,9 +3,7 @@ import Debug from "debug";
 import chalk from "chalk";
 import app from ".";
 
-const debug = Debug("philoApp:server:startServer");
-
-debug("funciono aca");
+const debug = Debug("philoapp:server:startServer");
 
 const startServer = (port: number) =>
   new Promise((resolve, reject) => {
