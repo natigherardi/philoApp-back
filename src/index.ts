@@ -1,7 +1,10 @@
 import "./configDotenv";
 import Debug from "debug";
+import express from "express";
 import startServer from "./server/startServer";
 import connectDB from "./database";
+import app from "./server";
+import registerUser from "./server/controllers/usersController";
 
 const debug = Debug("philoapp:files:index");
 
@@ -19,3 +22,7 @@ debug("Talking from src index");
     process.exit(1);
   }
 })();
+
+app.use(express.json());
+
+app.post("/users/register", registerUser);
