@@ -10,7 +10,7 @@ const connectDB = (dbUrl: string) => {
       debug(chalk.red("Error connecting to database"));
     }
 
-    debug(chalk.green("Connected to database"));
+    debug(chalk.greenBright("Connected to database"));
   });
 };
 
