@@ -1,0 +1,27 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: npm install
+      - name: Run test coverage
+        run: npm run test-coverage
+        env:
+          REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
+          REACT_APP_LOCAL_API_URL: ${{ env.REACT_APP_LOCAL_API_URL }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
