@@ -2,7 +2,7 @@ interface UserData {
   name: string;
   username: string;
   password: string;
-  quotes: string[];
+  quotes?: string[];
   id: string;
 }
 
