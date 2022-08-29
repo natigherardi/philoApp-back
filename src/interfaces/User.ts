@@ -1,4 +1,4 @@
-interface UserData {
+export interface UserData {
   name: string;
   username: string;
   password: string;
@@ -6,4 +6,8 @@ interface UserData {
   id: string;
 }
 
-export default UserData;
+export interface UserRegister {
+  name: string;
+  username: string;
+  password: string;
+}
