@@ -4,7 +4,6 @@ import express from "express";
 import startServer from "./server/startServer";
 import connectDB from "./database";
 import app from "./server";
-import registerUser from "./server/controllers/usersController";
 import userRouter from "./server/routers/userRouter";
 
 const debug = Debug("philoapp:files:index");
