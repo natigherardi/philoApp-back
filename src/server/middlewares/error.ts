@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import Debug from "debug";
+import { ValidationError } from "express-validation";
 import { NextFunction, Request, Response } from "express";
 import CustomError from "../../utils/CustomError";
 
@@ -18,10 +19,15 @@ export const generalError = (
   _next: NextFunction
 ) => {
   const errorCode = error.statusCode ?? 500;
-  const errorMessage =
+  let errorMessage =
     error.publicMessage ?? "There has been a problem. Try again please";
 
-  debug(chalk.red(error.privateMessage));
-
+  if (error instanceof ValidationError) {
+    errorMessage = "Wrong data entered";
+    const privateMessage = `Error: ${error.details.body[0].message}`;
+    debug(chalk.red(privateMessage));
+  } else {
+    debug(chalk.red(error.privateMessage));
+  }
   res.status(errorCode).json({ error: errorMessage });
 };
