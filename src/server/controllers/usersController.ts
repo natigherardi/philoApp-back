@@ -2,7 +2,7 @@ import chalk from "chalk";
 import Debug from "debug";
 import { NextFunction, Request, Response } from "express";
 import UserModel from "../../database/models/User";
-import { RequestBodyUser, UserRegister } from "../../interfaces/User";
+import { UserRegister } from "../../interfaces/User";
 import hashCreator from "../../utils/authenticate";
 
 const debug = Debug("philoapp:files:userscontroller");
