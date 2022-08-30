@@ -41,6 +41,7 @@ describe("Given the users controller", () => {
         const response = {} as Partial<Response>;
         const error = new Error();
         UserModel.create = jest.fn().mockRejectedValue(error);
+
         await registerUser(
           request as Request,
           response as Response,
