@@ -53,4 +53,39 @@ describe("Given a general error middleware", () => {
       expect(response.json).toHaveBeenCalledWith(expectedErrorMessage);
     });
   });
+
+  describe("And when it receives an error with falsy status code and public message", () => {
+    describe("When it's called and it receives a response object and an error", () => {
+      const request = {};
+      const next = {};
+      const response = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as Partial<Response>;
+      const statusCode = undefined as undefined;
+      const publicMessage = undefined as undefined;
+      const error = { statusCode, publicMessage };
+
+      generalError(
+        error as CustomError,
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      test("Then the response method status should be called with the default code status", () => {
+        const expectedStatus = 500;
+
+        expect(response.status).toHaveBeenCalledWith(expectedStatus);
+      });
+
+      test("And then the response metod json should be called with", () => {
+        const expectedErrorMessage = {
+          error: "There has been a problem. Try again please",
+        };
+
+        expect(response.json).toHaveBeenCalledWith(expectedErrorMessage);
+      });
+    });
+  });
 });

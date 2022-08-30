@@ -43,16 +43,5 @@
     "express": "^4.18.1",
     "mongoose": "^6.5.3",
     "morgan": "^1.10.0"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.tsx",
-      "src/**/*.ts",
-      "!src/index.ts",
-      "!src/configDotenv.ts",
-      "!src/databse/index.ts",
-      "!src/server/index.ts",
-      "!src/server/startServer.ts"
-    ]
   }
 }
