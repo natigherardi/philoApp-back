@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import CustomError from "../../utils/CustomError";
 import { generalError, notFoundError } from "./error";
+import ErrorValidate from "../../interfaces/ValidateError";
 
 describe("Given a not found Error middleware", () => {
   describe("When it's called and it receives a response object", () => {
@@ -51,6 +52,47 @@ describe("Given a general error middleware", () => {
       const expectedErrorMessage = { error: error.publicMessage };
 
       expect(response.json).toHaveBeenCalledWith(expectedErrorMessage);
+    });
+  });
+
+  describe("And when it receives an error because the data of the req body doesn't match the data user schema", () => {
+    test("Then the response method json should be called with 'Wrong data entered", () => {
+      const request = {};
+      const next = {};
+      const response = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as Partial<Response>;
+      const message = "Wrong data entered";
+      const error = {
+        name: "ValidationError",
+        message: "Validation Failed",
+        statusCode: 400,
+        error: "Bad Request",
+        details: {
+          body: [
+            {
+              message: "hola funciono finalmente",
+              path: ["password"],
+              type: "string.empty",
+              context: {
+                label: "password",
+                value: "",
+                key: "password",
+              },
+            },
+          ],
+        },
+      };
+
+      generalError(
+        error as ErrorValidate,
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.json).toHaveBeenCalledWith({ error: message });
     });
   });
 
