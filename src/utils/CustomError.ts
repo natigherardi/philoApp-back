@@ -5,10 +5,10 @@ class CustomError extends Error implements ErrorCoded {
 
   constructor(
     public statusCode: number,
-    public message: string,
+    public privateMessage: string,
     public publicMessage: string
   ) {
-    super(message);
+    super(privateMessage);
   }
 }
 
