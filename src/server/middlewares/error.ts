@@ -12,21 +12,22 @@ export const notFoundError = (req: Request, res: Response) => {
 };
 
 export const generalError = (
-  error: CustomError,
+  error: CustomError | ValidationError,
   _req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
   const errorCode = error.statusCode ?? 500;
-  let errorMessage =
-    error.publicMessage ?? "There has been a problem. Try again please";
+  let errorMessage: string;
 
   if (error instanceof ValidationError) {
     errorMessage = "Wrong data entered";
-    const privateMessage = `Error: ${error.details.body[0].message}`;
-    debug(chalk.red(privateMessage));
+    const privateMessage = error.details.body[0].message;
+    debug(chalk.red(`Error: ${privateMessage}`));
   } else {
+    errorMessage =
+      error.publicMessage ?? "There has been a problem. Try again please";
     debug(chalk.red(error.privateMessage));
   }
   res.status(errorCode).json({ error: errorMessage });
