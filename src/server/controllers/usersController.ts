@@ -2,7 +2,7 @@ import chalk from "chalk";
 import Debug from "debug";
 import { NextFunction, Request, Response } from "express";
 import UserModel from "../../database/models/User";
-import { RequestBodyUser } from "../../interfaces/User";
+import { RequestBodyUser, UserRegister } from "../../interfaces/User";
 import hashCreator from "../../utils/authenticate";
 
 const debug = Debug("philoapp:files:userscontroller");
@@ -13,13 +13,12 @@ const registerUser = async (
   next: NextFunction
 ) => {
   debug("Request arrived");
-  const requestUser: RequestBodyUser = req.body;
-  const { user } = requestUser;
+  const user: UserRegister = req.body;
   user.password = await hashCreator(user.password);
 
   try {
     const newUser = await UserModel.create(user);
-    res.status(201).json(newUser);
+    res.status(201).json({ user: newUser });
     debug(chalk.green("User created succesfully"));
   } catch (error) {
     debug(chalk.red("Error creating new user"));
