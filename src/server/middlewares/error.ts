@@ -1,8 +1,8 @@
 import chalk from "chalk";
 import Debug from "debug";
-import { ValidationError } from "express-validation";
 import { NextFunction, Request, Response } from "express";
 import CustomError from "../../utils/CustomError";
+import ErrorValidate from "../../interfaces/ValidateError";
 
 const debug = Debug("philoapp:middlewares:error");
 
@@ -12,7 +12,7 @@ export const notFoundError = (req: Request, res: Response) => {
 };
 
 export const generalError = (
-  error: CustomError | ValidationError,
+  error: CustomError | ErrorValidate,
   _req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,15 +20,15 @@ export const generalError = (
 ) => {
   const errorCode = error.statusCode ?? 500;
   let errorMessage: string;
-
-  if (error instanceof ValidationError) {
+  if ((error as ErrorValidate).name) {
     errorMessage = "Wrong data entered";
-    const privateMessage = error.details.body[0].message;
+    const privateMessage = (error as ErrorValidate).details.body[0].message;
     debug(chalk.red(`Error: ${privateMessage}`));
   } else {
     errorMessage =
-      error.publicMessage ?? "There has been a problem. Try again please";
-    debug(chalk.red(error.privateMessage));
+      (error as CustomError).publicMessage ??
+      "There has been a problem. Try again please";
+    debug(chalk.red((error as CustomError).privateMessage));
   }
   res.status(errorCode).json({ error: errorMessage });
 };

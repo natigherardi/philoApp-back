@@ -1,7 +1,7 @@
-import { ValidationError } from "express-validation";
 import { NextFunction, Request, Response } from "express";
 import CustomError from "../../utils/CustomError";
 import { generalError, notFoundError } from "./error";
+import ErrorValidate from "../../interfaces/ValidateError";
 
 describe("Given a not found Error middleware", () => {
   describe("When it's called and it receives a response object", () => {
@@ -65,17 +65,34 @@ describe("Given a general error middleware", () => {
       } as Partial<Response>;
       const message = "Wrong data entered";
       const error = {
-        details: { body: [{ message }] },
-      } as Partial<ValidationError>;
+        name: "ValidationError",
+        message: "Validation Failed",
+        statusCode: 400,
+        error: "Bad Request",
+        details: {
+          body: [
+            {
+              message: "hola funciono finalmente",
+              path: ["password"],
+              type: "string.empty",
+              context: {
+                label: "password",
+                value: "",
+                key: "password",
+              },
+            },
+          ],
+        },
+      };
 
       generalError(
-        error as ValidationError,
+        error as ErrorValidate,
         request as Request,
         response as Response,
         next as NextFunction
       );
 
-      expect(response.json).toHaveBeenCalled();
+      expect(response.json).toHaveBeenCalledWith({ error: message });
     });
   });
 
