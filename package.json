@@ -11,7 +11,8 @@
     "test": "jest src",
     "test-w": "jest src --watchAll",
     "test-coverage": "jest src --coverage",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
