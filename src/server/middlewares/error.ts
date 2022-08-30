@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import Debug from "debug";
 import { NextFunction, Request, Response } from "express";
-import ErrorCoded from "../../interfaces/ErrorCoded";
 import CustomError from "../../utils/CustomError";
 
 const debug = Debug("philoapp:middlewares:error");
@@ -12,10 +11,11 @@ export const notFoundError = (req: Request, res: Response) => {
 };
 
 export const generalError = (
+  error: CustomError,
   _req: Request,
   res: Response,
-  _next: NextFunction,
-  error: CustomError
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction
 ) => {
   const errorCode = error.statusCode ?? 500;
   const errorMessage =

@@ -5,6 +5,7 @@ import startServer from "./server/startServer";
 import connectDB from "./database";
 import app from "./server";
 import userRouter from "./server/routers/userRouter";
+import { generalError, notFoundError } from "./server/middlewares/error";
 
 const debug = Debug("philoapp:files:index");
 
@@ -26,3 +27,6 @@ debug("Talking from src index");
 app.use(express.json());
 
 app.use("/user", userRouter);
+
+app.use(notFoundError);
+app.use(generalError);

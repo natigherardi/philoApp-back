@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import UserModel from "../../database/models/User";
 import { UserRegister } from "../../interfaces/User";
 import hashCreator from "../../utils/authenticate";
+import CustomError from "../../utils/CustomError";
 
 const debug = Debug("philoapp:files:userscontroller");
 
@@ -20,8 +21,12 @@ const registerUser = async (
     res.status(201).json({ user: newUser });
     debug(chalk.green("User created succesfully"));
   } catch (error) {
-    debug(chalk.red("Error creating new user"));
-    next(error);
+    const customRegisterError = new CustomError(
+      400,
+      error.message,
+      "Error registering"
+    );
+    next(customRegisterError);
   }
 };
 
