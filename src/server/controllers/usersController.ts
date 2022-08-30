@@ -15,7 +15,6 @@ const registerUser = async (
   debug("Request arrived");
   const user: UserRegister = req.body;
   user.password = await hashCreator(user.password);
-
   try {
     const newUser = await UserModel.create(user);
     res.status(201).json({ user: newUser });

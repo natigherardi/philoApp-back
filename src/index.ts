@@ -4,7 +4,7 @@ import express from "express";
 import startServer from "./server/startServer";
 import connectDB from "./database";
 import app from "./server";
-import registerUser from "./server/controllers/usersController";
+import userRouter from "./server/routers/userRouter";
 
 const debug = Debug("philoapp:files:index");
 
@@ -25,4 +25,4 @@ debug("Talking from src index");
 
 app.use(express.json());
 
-app.post("/users/register", registerUser);
+app.use("/user", userRouter);
