@@ -17,8 +17,10 @@ const registerUser = async (
   const user: UserRegister = req.body;
   user.password = await hashCreator(user.password);
   try {
-    const newUser = await UserModel.create(user);
-    res.status(201).json({ user: newUser });
+    await UserModel.create(user);
+    res
+      .status(201)
+      .json({ message: "User was created in the database correctly" });
     debug(chalk.green("User created succesfully"));
   } catch (error) {
     const customRegisterError = new CustomError(

@@ -29,7 +29,9 @@ describe("Given the users controller", () => {
       });
 
       test("And then the json method of the response should be called with a user object", async () => {
-        expect(response.json).toHaveBeenCalledWith({ user: dataUser });
+        expect(response.json).toHaveBeenCalledWith({
+          message: "User was created in the database correctly",
+        });
       });
     });
 
