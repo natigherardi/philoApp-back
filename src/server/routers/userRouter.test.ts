@@ -31,4 +31,18 @@ describe("Given a users router", () => {
       expect(body).toHaveProperty("message", message);
     });
   });
+
+  describe("When it receives a request with empty username", () => {
+    test.only("Then it should respond with a status 400 and the message 'Wrong data entered'", async () => {
+      const invalidUserData = { name: "john", username: "john", password: "" };
+      const expectedMessage = "Wrong data entered";
+
+      const { body } = await request(app)
+        .post("/user/register")
+        .send(invalidUserData)
+        .expect(400);
+
+      expect(body).toHaveProperty("error", expectedMessage);
+    });
+  });
 });
