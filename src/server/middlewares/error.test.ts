@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import CustomError from "../../utils/CustomError";
+import ErrorValidation from "../../utils/ErrorValidation";
 import { generalError, notFoundError } from "./error";
-import ErrorValidate from "../../interfaces/ValidateError";
 
 describe("Given a not found Error middleware", () => {
   describe("When it's called and it receives a response object", () => {
@@ -64,29 +64,10 @@ describe("Given a general error middleware", () => {
         json: jest.fn(),
       } as Partial<Response>;
       const message = "Wrong data entered";
-      const error = {
-        name: "ValidationError",
-        message: "Validation Failed",
-        statusCode: 400,
-        error: "Bad Request",
-        details: {
-          body: [
-            {
-              message: "hola funciono finalmente",
-              path: ["password"],
-              type: "string.empty",
-              context: {
-                label: "password",
-                value: "",
-                key: "password",
-              },
-            },
-          ],
-        },
-      };
+      const error = new ErrorValidation(400, message, "");
 
       generalError(
-        error as ErrorValidate,
+        error,
         request as Request,
         response as Response,
         next as NextFunction

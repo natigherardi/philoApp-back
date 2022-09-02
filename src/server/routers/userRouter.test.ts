@@ -19,7 +19,7 @@ afterAll(async () => {
 
 describe("Given a users router", () => {
   describe("When it receives a request with username and name 'Natalia', and password '123'", () => {
-    test.only("Then it should respond with a status 201 and an object containing the data of the req", async () => {
+    test("Then it should respond with a status 201 and an object containing the data of the req", async () => {
       const userData = { name: "john", username: "john", password: "123" };
       const message = "User was created in the database correctly";
 
@@ -33,7 +33,7 @@ describe("Given a users router", () => {
   });
 
   describe("When it receives a request with empty username", () => {
-    test.only("Then it should respond with a status 400 and the message 'Wrong data entered'", async () => {
+    test("Then it should respond with a status 400 and the message 'Wrong data entered'", async () => {
       const invalidUserData = { name: "john", username: "john", password: "" };
       const expectedMessage = "Wrong data entered";
 
