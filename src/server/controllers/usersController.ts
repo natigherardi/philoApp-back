@@ -47,7 +47,7 @@ export const loginUser = async (
 
   let findUser: Array<UserRegister>;
   try {
-    findUser = await UserModel.find({ username: loggedUser });
+    findUser = await UserModel.find({ username: loggedUser.username });
     if (findUser.length === 0) {
       next(loginError);
       return;

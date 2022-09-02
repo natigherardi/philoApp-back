@@ -1,8 +1,11 @@
 import bcrypt from "bcrypt";
 
-const hashCreator = (password: string) => {
+export const hashCreator = (password: string) => {
   const salt = 10;
   return bcrypt.hash(password, salt);
 };
 
-export default hashCreator;
+export const hashCompare = (
+  passwordEntered: string,
+  passwordDBHashed: string
+) => bcrypt.compare(passwordEntered, passwordDBHashed);
