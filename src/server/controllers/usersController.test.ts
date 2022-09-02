@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import UserModel from "../../database/models/User";
-import registerUser from "./usersController";
+import { registerUser } from "./usersController";
 
 describe("Given the users controller", () => {
   describe("When the registerUser function is called", () => {
