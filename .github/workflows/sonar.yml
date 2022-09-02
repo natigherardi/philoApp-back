@@ -18,6 +18,7 @@ jobs:
       - name: Run test coverage
         run: npm run test-coverage
         env:
+          SECRET: ${{secrets.SECRET}}
           REACT_APP_API_URL: ${{ env.REACT_APP_API_URL }}
           REACT_APP_LOCAL_API_URL: ${{ env.REACT_APP_LOCAL_API_URL }}
       - name: SonarCloud Scan
