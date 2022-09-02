@@ -2,8 +2,13 @@ import chalk from "chalk";
 import Debug from "debug";
 import { NextFunction, Request, Response } from "express";
 import UserModel from "../../database/models/User";
-import { UserLogin, UserRegister } from "../../interfaces/User";
-import { hashCompare, hashCreator } from "../../utils/authenticate";
+import JwtPayload from "../../interfaces/JwtPayload";
+import { UserFullData, UserLogin, UserRegister } from "../../interfaces/User";
+import {
+  createToken,
+  hashCompare,
+  hashCreator,
+} from "../../utils/authenticate";
 import CustomError from "../../utils/CustomError";
 
 const debug = Debug("philoapp:files:userscontroller");
@@ -45,13 +50,15 @@ export const loginUser = async (
     "User or password not valid"
   );
 
-  let foundUser: Array<UserRegister>;
+  let foundUser: Array<UserFullData>;
+  let user: UserFullData;
   try {
     foundUser = await UserModel.find({ username: loggedUser.username });
     if (foundUser.length === 0) {
       next(loginError);
       return;
     }
+    user = foundUser[0];
   } catch (error) {
     const errorFinding = new CustomError(
       403,
@@ -64,7 +71,7 @@ export const loginUser = async (
   try {
     const isPassWordCorrect = await hashCompare(
       loggedUser.password,
-      foundUser[0].password
+      user.password
     );
     if (!isPassWordCorrect) {
       loginError.privateMessage = "Password invalid";
@@ -81,5 +88,15 @@ export const loginUser = async (
     return;
   }
 
-  res.status(200).json("");
+  const jwtPayload: JwtPayload = {
+    id: user.id,
+    username: user.username,
+  };
+
+  const responseWithToken = {
+    user: {
+      token: createToken(jwtPayload),
+    },
+  };
+  res.status(200).json(responseWithToken);
 };

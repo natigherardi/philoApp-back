@@ -1,6 +1,6 @@
 interface JwtPayload {
   id: string;
-  userName: string;
+  username: string;
 }
 
 export default JwtPayload;
