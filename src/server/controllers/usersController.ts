@@ -54,9 +54,7 @@ export const loginUser = async (
   try {
     foundUser = await UserModel.find({ username: loggedUser.username });
     if (foundUser.length === 0) {
-      debugger;
       next(loginError);
-      debugger;
       return;
     }
   } catch (error) {
