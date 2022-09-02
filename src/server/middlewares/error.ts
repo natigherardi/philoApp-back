@@ -3,7 +3,6 @@ import Debug from "debug";
 import { NextFunction, Request, Response } from "express";
 import { ValidationError } from "express-validation";
 import CustomError from "../../utils/CustomError";
-import ErrorValidation from "../../utils/ErrorValidation";
 
 const debug = Debug("philoapp:middlewares:error");
 
