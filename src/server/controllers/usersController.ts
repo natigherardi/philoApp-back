@@ -51,14 +51,14 @@ export const loginUser = async (
   );
 
   let foundUser: Array<UserFullData>;
-  let user: UserFullData;
   try {
     foundUser = await UserModel.find({ username: loggedUser.username });
     if (foundUser.length === 0) {
+      debugger;
       next(loginError);
+      debugger;
       return;
     }
-    user = foundUser[0];
   } catch (error) {
     const errorFinding = new CustomError(
       403,
@@ -68,6 +68,7 @@ export const loginUser = async (
     next(errorFinding);
     return;
   }
+  const [user] = foundUser;
   try {
     const isPassWordCorrect = await hashCompare(
       loggedUser.password,
@@ -87,12 +88,10 @@ export const loginUser = async (
     next(passwordCheckError);
     return;
   }
-
   const jwtPayload: JwtPayload = {
     id: user.id,
     username: user.username,
   };
-
   const responseWithToken = {
     user: {
       token: createToken(jwtPayload),
