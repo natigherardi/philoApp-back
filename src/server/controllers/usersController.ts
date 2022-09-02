@@ -3,7 +3,7 @@ import Debug from "debug";
 import { NextFunction, Request, Response } from "express";
 import UserModel from "../../database/models/User";
 import { UserLogin, UserRegister } from "../../interfaces/User";
-import hashCreator from "../../utils/authenticate";
+import { hashCompare, hashCreator } from "../../utils/authenticate";
 import CustomError from "../../utils/CustomError";
 
 const debug = Debug("philoapp:files:userscontroller");
@@ -45,10 +45,10 @@ export const loginUser = async (
     "User or password not valid"
   );
 
-  let findUser: Array<UserRegister>;
+  let foundUser: Array<UserRegister>;
   try {
-    findUser = await UserModel.find({ username: loggedUser.username });
-    if (findUser.length === 0) {
+    foundUser = await UserModel.find({ username: loggedUser.username });
+    if (foundUser.length === 0) {
       next(loginError);
       return;
     }
@@ -59,7 +59,27 @@ export const loginUser = async (
       "User or password not valid"
     );
     next(errorFinding);
+    return;
+  }
+  try {
+    const isPassWordCorrect = await hashCompare(
+      loggedUser.password,
+      foundUser[0].password
+    );
+    if (!isPassWordCorrect) {
+      loginError.privateMessage = "Password invalid";
+      next(loginError);
+      return;
+    }
+  } catch (error) {
+    const passwordCheckError = new CustomError(
+      403,
+      `name: ${(error as Error).name}; message:  ${(error as Error).message}`,
+      "User or password not valid"
+    );
+    next(passwordCheckError);
+    return;
   }
 
-  res.status(200).json("login funcionando ?");
+  res.status(200).json("");
 };
