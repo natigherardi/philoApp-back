@@ -9,7 +9,7 @@ interface BodyType {
   };
 }
 
-interface ErrorValidate {
+interface ErrorValidation {
   name: string;
   message: string;
   statusCode: number;
@@ -19,4 +19,4 @@ interface ErrorValidate {
   };
 }
 
-export default ErrorValidate;
+export default ErrorValidation;
