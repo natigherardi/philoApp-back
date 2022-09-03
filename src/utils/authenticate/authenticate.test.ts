@@ -5,7 +5,6 @@ import {
   hashCreator,
   verifyToken,
 } from "./authenticate";
-import jwt from "jsonwebtoken";
 
 const mockJwtSign = jest.fn().mockReturnValue("tokenMock");
 const mockJwtVerify = jest.fn().mockReturnValue("verifyMock");
