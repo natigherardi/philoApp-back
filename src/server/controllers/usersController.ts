@@ -58,11 +58,8 @@ export const loginUser = async (
       return;
     }
   } catch (error) {
-    const errorFinding = new CustomError(
-      403,
-      `name: ${(error as Error).name}; message:  ${(error as Error).message}`,
-      "User or password not valid"
-    );
+    const { message } = error as CustomError;
+    const errorFinding = new CustomError(403, `${message}`, "Error finding");
     next(errorFinding);
     return;
   }
@@ -72,9 +69,13 @@ export const loginUser = async (
       loggedUser.password,
       user.password
     );
+    const incorrectPasswordError = new CustomError(
+      403,
+      "Password invalid",
+      "User or password not valid"
+    );
     if (!isPassWordCorrect) {
-      loginError.privateMessage = "Password invalid";
-      next(loginError);
+      next(incorrectPasswordError);
       return;
     }
   } catch (error) {

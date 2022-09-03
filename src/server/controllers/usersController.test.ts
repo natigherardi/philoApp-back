@@ -3,14 +3,14 @@ import UserModel from "../../database/models/User";
 import { UserLogin } from "../../interfaces/User";
 import { loginUser, registerUser } from "./usersController";
 
-const mockResultHashCompare = true;
+let mockResultHashCompare: boolean | Error = true;
 
 jest.mock("../../utils/authenticate", () => ({
   ...jest.requireActual("../../utils/authenticate"),
 
   hashCreator: () => "#",
   hashCompare: () => mockResultHashCompare,
-  createToken: () => "testing",
+  createToken: () => "mockToken",
 }));
 
 afterEach(() => {
@@ -59,7 +59,7 @@ describe("When the registerUser function is called", () => {
       const request = { body: dataUser } as Request;
       const next = jest.fn();
       const response = {} as Partial<Response>;
-      const error = new Error();
+      const error = new Error("Error registering");
       UserModel.create = jest.fn().mockRejectedValue(error);
 
       await registerUser(
@@ -77,10 +77,12 @@ describe("When the loginUser function is called", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+  const mockedUser: UserLogin = { username: "Pablo", password: "123" };
   let res: Partial<Response>;
-  const mockedUser: UserLogin = { username: "Natalia", password: "123" };
   const mockedUserFound = { username: "Natalia", password: "123", id: "" };
   const request = { body: mockedUser } as Request;
+  const response = {};
+
   let next: NextFunction;
   beforeEach(async () => {
     next = jest.fn();
@@ -88,7 +90,6 @@ describe("When the loginUser function is called", () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     } as Partial<Response>;
-    await loginUser(request as Request, res as Response, next as NextFunction);
   });
 
   describe("And when it receives a request with a valid username 'Natalia' and password '123'", () => {
@@ -97,54 +98,76 @@ describe("When the loginUser function is called", () => {
     test("Then the status method of the response should be called with 200", async () => {
       const expectedStatus = 200;
 
+      await loginUser(
+        request as Request,
+        res as Response,
+        next as NextFunction
+      );
+
       expect(res.status).toHaveBeenCalledWith(expectedStatus);
     });
 
     test("And then the json mehtod of the response should be called with the token created", async () => {
-      const expectedResponse = { user: { token: "testing" } };
+      const expectedResponse = { user: { token: "mockToken" } };
+
+      await loginUser(
+        request as Request,
+        res as Response,
+        next as NextFunction
+      );
 
       expect(res.json).toHaveBeenCalledWith(expectedResponse);
     });
   });
 
-  /* describe("And when it receives an invalid username 'Pablo' that is not found", () => {
-    const mockedUser: UserLogin = { username: "Pablo", password: "123" };
+  describe("And when it receives an invalid username that is not found", () => {
+    const expectedError = new Error("User or password not valid");
     beforeEach(() => {
-      jest.clearAllMocks();
+      next = jest.fn() as NextFunction;
     });
-    //
-    // 
-    //   await loginUser(
-    //     request as Request,
-    //     res as Response,
-    //     next as NextFunction
-    //   );
-    // });
 
-    test.only("Then next should be called with an error", async () => {
-
-const myreq = { body: mockedUser } as Request;
-  next = jest.fn() as NextFunction;
-      const myres = {
-         status: jest.fn().mockReturnThis(),
-         json: jest.fn(),
-    } as Partial<Response>;
-
-
-      const nextMock = jest.fn();
+    test("Then next should be called with an error 'User not found'", async () => {
       UserModel.find = jest.fn().mockResolvedValue([]);
-      const expectedError = {
-        statusCode: 403,
-        privateMessage: "User not found",
-        publicMessage: "User or password not valid",
-      };
 
       await loginUser(
-        myreq as Request,
-        myres as Response,
-        nextMock as NextFunction
+        request as Request,
+        response as Response,
+        next as NextFunction
       );
 
-      expect(nextMock).toHaveBeenCalledWith(expectedError);
-  )}  */
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("And when the find method returns an error", () => {
+    test("Then next should be called with an error 'User not found'", async () => {
+      const expectedErrorCatch = new Error("Error finding");
+
+      UserModel.find = jest.fn().mockRejectedValue(expectedErrorCatch);
+
+      await loginUser(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedErrorCatch);
+    });
+  });
+
+  describe("And when the user is found but the password entered doesn't match", () => {
+    test("Then next should be called with passsword check error", async () => {
+      UserModel.find = jest.fn().mockResolvedValue([mockedUser]);
+      mockResultHashCompare = false;
+      const expectedThrownError = new Error("User or password not valid");
+
+      await loginUser(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedThrownError);
+    });
+  });
 });
