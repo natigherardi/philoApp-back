@@ -2,8 +2,13 @@ import chalk from "chalk";
 import Debug from "debug";
 import { NextFunction, Request, Response } from "express";
 import UserModel from "../../database/models/User";
-import { UserLogin, UserRegister } from "../../interfaces/User";
-import { hashCompare, hashCreator } from "../../utils/authenticate";
+import JwtPayload from "../../interfaces/JwtPayload";
+import { UserFullData, UserLogin, UserRegister } from "../../interfaces/User";
+import {
+  createToken,
+  hashCompare,
+  hashCreator,
+} from "../../utils/authenticate";
 import CustomError from "../../utils/CustomError";
 
 const debug = Debug("philoapp:files:userscontroller");
@@ -45,7 +50,7 @@ export const loginUser = async (
     "User or password not valid"
   );
 
-  let foundUser: Array<UserRegister>;
+  let foundUser: Array<UserFullData>;
   try {
     foundUser = await UserModel.find({ username: loggedUser.username });
     if (foundUser.length === 0) {
@@ -53,22 +58,24 @@ export const loginUser = async (
       return;
     }
   } catch (error) {
-    const errorFinding = new CustomError(
-      403,
-      `name: ${(error as Error).name}; message:  ${(error as Error).message}`,
-      "User or password not valid"
-    );
+    const { message } = error as CustomError;
+    const errorFinding = new CustomError(403, `${message}`, "Error finding");
     next(errorFinding);
     return;
   }
+  const [user] = foundUser;
   try {
     const isPassWordCorrect = await hashCompare(
       loggedUser.password,
-      foundUser[0].password
+      user.password
+    );
+    const incorrectPasswordError = new CustomError(
+      403,
+      "Password invalid",
+      "User or password not valid"
     );
     if (!isPassWordCorrect) {
-      loginError.privateMessage = "Password invalid";
-      next(loginError);
+      next(incorrectPasswordError);
       return;
     }
   } catch (error) {
@@ -80,6 +87,14 @@ export const loginUser = async (
     next(passwordCheckError);
     return;
   }
-
-  res.status(200).json("");
+  const jwtPayload: JwtPayload = {
+    id: user.id,
+    username: user.username,
+  };
+  const responseWithToken = {
+    user: {
+      token: createToken(jwtPayload),
+    },
+  };
+  res.status(200).json(responseWithToken);
 };

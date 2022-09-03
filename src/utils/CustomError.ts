@@ -8,7 +8,7 @@ class CustomError extends Error implements ErrorCoded {
     public privateMessage: string,
     public publicMessage: string
   ) {
-    super(privateMessage);
+    super(publicMessage);
   }
 }
 
