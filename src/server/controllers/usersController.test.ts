@@ -5,8 +5,8 @@ import { loginUser, registerUser } from "./usersController";
 
 let mockResultHashCompare: boolean | Error = true;
 
-jest.mock("../../utils/authenticate", () => ({
-  ...jest.requireActual("../../utils/authenticate"),
+jest.mock("../../utils/authenticate/authenticate", () => ({
+  ...jest.requireActual("../../utils/authenticate/authenticate"),
 
   hashCreator: () => "#",
   hashCompare: () => mockResultHashCompare,

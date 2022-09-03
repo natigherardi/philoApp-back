@@ -8,7 +8,7 @@ import {
   createToken,
   hashCompare,
   hashCreator,
-} from "../../utils/authenticate";
+} from "../../utils/authenticate/authenticate";
 import CustomError from "../../utils/CustomError";
 
 const debug = Debug("philoapp:files:userscontroller");
