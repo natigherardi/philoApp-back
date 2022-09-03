@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import JwtPayload from "../interfaces/JwtPayload";
+import JwtPayload from "../../interfaces/JwtPayload";
 
 export const hashCreator = (password: string) => {
   const salt = 10;
