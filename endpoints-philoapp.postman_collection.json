@@ -7,7 +7,7 @@
   },
   "item": [
     {
-      "name": "Post register",
+      "name": "Register",
       "request": {
         "method": "POST",
         "header": [],
@@ -16,6 +16,29 @@
           "protocol": "https",
           "host": ["ngherardi-final-project-202207", "herokuapp", "com"],
           "path": ["user", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"username\": \"\", \"password\": \"\" }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://ngherardi-final-project-202207.herokuapp.com/user/login",
+          "protocol": "https",
+          "host": ["ngherardi-final-project-202207", "herokuapp", "com"],
+          "path": ["user", "login"]
         }
       },
       "response": []
