@@ -1,24 +1,61 @@
 {
-  "info": {
-    "_postman_id": "98f4e8ab-6c13-436c-ad8e-6a197032db0b",
-    "name": "endpoints-philoapp",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "22240964"
-  },
-  "item": [
-    {
-      "name": "Post register",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "url": {
-          "raw": "https://ngherardi-final-project-202207.herokuapp.com/user/register",
-          "protocol": "https",
-          "host": ["ngherardi-final-project-202207", "herokuapp", "com"],
-          "path": ["user", "register"]
-        }
-      },
-      "response": []
-    }
-  ]
+	"info": {
+		"_postman_id": "98f4e8ab-6c13-436c-ad8e-6a197032db0b",
+		"name": "endpoints-philoapp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22240964"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://ngherardi-final-project-202207.herokuapp.com/user/register",
+					"protocol": "https",
+					"host": [
+						"ngherardi-final-project-202207",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"username\": \"\", \"password\": \"\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://ngherardi-final-project-202207.herokuapp.com/user/login",
+					"protocol": "https",
+					"host": [
+						"ngherardi-final-project-202207",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
 }
