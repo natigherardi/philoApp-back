@@ -14,7 +14,7 @@ describe("Given a getAllQuotes function returned by the quotesController", () =>
 
   describe("When it's invoked and it receives a request and the response is succesfull", () => {
     const next = () => {};
-    const quotes = [{ textContent: "", author: "", user: "" }];
+    const quotes = [{ textContent: "", author: "", user: "", image: "" }];
     QuoteModel.find = jest.fn().mockResolvedValue(quotes);
 
     test("Then the status method of the response should be called with 201", async () => {
