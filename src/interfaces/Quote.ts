@@ -1,5 +1,5 @@
 interface Quote {
-  textConten: string;
+  textContent: string;
   author: string;
   user: string;
   year?: number;

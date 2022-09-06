@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import QuoteModel from "../../database/models/Quote";
+import Quote from "../../interfaces/Quote";
 import CustomError from "../../utils/CustomError";
 
 const getAllQuotes = async (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -13,6 +14,7 @@ const getAllQuotes = async (
     "Error getting the quotes"
   );
 
+  let quotes: Quote[];
   try {
     quotes = await QuoteModel.find();
     if (quotes.length === 0) {
@@ -29,7 +31,7 @@ const getAllQuotes = async (
     next(errorFinding);
     return;
   }
-  res.status(200).json(quotes);
+  res.status(201).json(quotes);
 };
 
 export default getAllQuotes;
