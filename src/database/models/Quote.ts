@@ -9,6 +9,6 @@ const quoteSchema = new Schema({
   book: { type: String },
 });
 
-const Quote = model("Quote", quoteSchema, "quotes");
+const QuoteModel = model("Quote", quoteSchema, "quotes");
 
-export default Quote;
+export default QuoteModel;
