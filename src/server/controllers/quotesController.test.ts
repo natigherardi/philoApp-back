@@ -18,7 +18,7 @@ describe("Given a getAllQuotes function returned by the quotesController", () =>
     QuoteModel.find = jest.fn().mockResolvedValue(quotes);
 
     test("Then the status method of the response should be called with 201", async () => {
-      const statusOk = 201;
+      const statusOk = 200;
 
       await getAllQuotes(
         request as Request,
