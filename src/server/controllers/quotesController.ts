@@ -31,7 +31,7 @@ const getAllQuotes = async (
     next(errorFinding);
     return;
   }
-  res.status(201).json(quotes);
+  res.status(200).json(quotes);
 };
 
 export default getAllQuotes;
