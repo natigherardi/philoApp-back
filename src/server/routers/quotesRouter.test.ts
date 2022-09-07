@@ -13,6 +13,7 @@ const mockQuote: Quote = {
   image: "test",
   textContent: "test",
   user: "test",
+  owner: "6310d724c2e50669e79b0fb5",
 };
 
 beforeAll(async () => {

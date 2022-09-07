@@ -3,6 +3,8 @@ interface Quote {
   author: string;
   user: string;
   image: string;
+  owner: string;
+  favoritedBy?: string[];
   year?: number;
   school?: string;
   book?: string;
