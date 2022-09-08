@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import QuoteModel from "../../database/models/Quote";
+import UserModel from "../../database/models/User";
 import Quote from "../../interfaces/Quote";
 import CustomError from "../../utils/CustomError";
 
-const getAllQuotes = async (
+export const getAllQuotes = async (
   _req: Request,
   res: Response,
   next: NextFunction
@@ -34,4 +35,28 @@ const getAllQuotes = async (
   res.status(200).json(quotes);
 };
 
-export default getAllQuotes;
+export const getQuotesByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id: userId } = req.query;
+
+  try {
+    const { quotesCreated, quotesFavorited } = await UserModel.findById(userId)
+      .populate({
+        path: "quotesFavorited",
+        model: QuoteModel,
+      })
+      .populate({ path: "quotesCreated", model: QuoteModel });
+
+    res.status(200).json({ quotesCreated, quotesFavorited });
+  } catch (error) {
+    const quotesByUserError = new CustomError(
+      404,
+      error.message,
+      "There was a problem loading the quotes"
+    );
+    next(quotesByUserError);
+  }
+};
