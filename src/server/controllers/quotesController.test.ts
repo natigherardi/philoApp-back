@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import QuoteModel from "../../database/models/Quote";
-import getAllQuotes from "./quotesController";
+import { getAllQuotes } from "./quotesController";
 
 describe("Given a getAllQuotes function returned by the quotesController", () => {
   afterEach(() => {

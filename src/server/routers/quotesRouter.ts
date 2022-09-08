@@ -1,5 +1,5 @@
 import express from "express";
-import getAllQuotes from "../controllers/quotesController";
+import { getAllQuotes } from "../controllers/quotesController";
 
 const quotesRouter = express.Router();
 
