@@ -1,4 +1,5 @@
-import JwtPayload from "./JwtPayload";
+import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 interface CustomRequest extends Request {
   payload: JwtPayload;
