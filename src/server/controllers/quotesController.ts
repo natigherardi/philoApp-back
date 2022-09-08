@@ -40,16 +40,17 @@ export const getQuotesByUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id: userId } = req.params;
+  const { id: userId } = req.query;
+
   try {
-    const { quotesFavorited, quotesCreated } = await UserModel.findById(userId)
+    const { quotesCreated, quotesFavorited } = await UserModel.findById(userId)
       .populate({
         path: "quotesFavorited",
         model: QuoteModel,
       })
       .populate({ path: "quotesCreated", model: QuoteModel });
 
-    res.status(200).json({ quotesFavorited, quotesCreated });
+    res.status(200).json({ quotesCreated, quotesFavorited });
   } catch (error) {
     const quotesByUserError = new CustomError(
       404,
