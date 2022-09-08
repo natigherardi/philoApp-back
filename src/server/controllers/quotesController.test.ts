@@ -87,14 +87,6 @@ describe("Given a getQuotesByUser function returned by the quotesController", ()
   } as Partial<Response>;
   describe("When it's invoked and it receives a request and the response is succesfull", () => {
     const next = () => {};
-    const user = {
-      name: "patata",
-      username: "patata",
-      quotesCreated: ["6319125bd048c740c65fa9a4"],
-      quotesFavorited: ["6319125bd048c740c65fa9a4"],
-      id: "6310d724c2e50669e79b0fb5",
-    };
-
     const userPopulated = {
       name: "patata",
       username: "patata",
@@ -164,7 +156,6 @@ describe("Given a getQuotesByUser function returned by the quotesController", ()
 
   describe("And when it's invoked but the data base throws an error", () => {
     test("Then next should be called with an error with message 'There was a problem loading the quotes'", async () => {
-      jest.clearAllMocks();
       const next = jest.fn();
       const error = new Error("There was a problem loading the quotes");
       UserModel.findById = jest.fn().mockResolvedValue(null);
