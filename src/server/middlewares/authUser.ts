@@ -1,4 +1,3 @@
-import { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Response } from "express";
 import CustomRequest from "../../interfaces/CustomRequest";
 import { verifyToken } from "../../utils/authenticate/authenticate";

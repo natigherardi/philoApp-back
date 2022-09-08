@@ -12,9 +12,9 @@ describe("Given an authorization middleware", () => {
   afterEach(() => jest.clearAllMocks());
   const response = {};
   const next = jest.fn();
+  const tokenHeader = "Bearer 123";
 
   describe("When it's called and it receives a request with valid token", () => {
-    const tokenHeader = "Bearer 123";
     const request: Partial<CustomRequest> = {
       get: jest.fn().mockReturnValue(tokenHeader),
     };
@@ -45,11 +45,26 @@ describe("Given an authorization middleware", () => {
   });
 
   describe("And when the request doesn't have Authorization header", () => {
+    const error = new Error("Bad request");
     test("Then next should be called with an 'Bad request' error", () => {
       const request: Partial<CustomRequest> = {
         get: jest.fn().mockReturnValue(undefined),
       };
-      const error = new Error("Bad request");
+
+      authentication(
+        request as CustomRequest,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(error);
+    });
+
+    test("And then if the token is not valid next should also be called with the error", () => {
+      const request: Partial<CustomRequest> = {
+        get: jest.fn().mockReturnValue(tokenHeader),
+      };
+      mockVerify = jest.fn().mockReturnValue("test");
 
       authentication(
         request as CustomRequest,
