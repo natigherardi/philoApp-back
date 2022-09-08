@@ -8,14 +8,21 @@
   "item": [
     {
       "name": "Register",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
       "request": {
-        "method": "POST",
+        "method": "GET",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
         "url": {
-          "raw": "https://ngherardi-final-project-202207.herokuapp.com/user/register",
+          "raw": "https://ngherardi-final-project-202207.herokuapp.com/quotes/all-quotes",
           "protocol": "https",
           "host": ["ngherardi-final-project-202207", "herokuapp", "com"],
-          "path": ["user", "register"]
+          "path": ["quotes", "all-quotes"]
         }
       },
       "response": []
@@ -39,6 +46,47 @@
           "protocol": "https",
           "host": ["ngherardi-final-project-202207", "herokuapp", "com"],
           "path": ["user", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetAllQuotes",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "https://ngherardi-final-project-202207.herokuapp.com/quotes/all-quotes",
+          "protocol": "https",
+          "host": ["ngherardi-final-project-202207", "herokuapp", "com"],
+          "path": ["quotes", "all-quotes"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get quotes by user ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://ngherardi-final-project-202207.herokuapp.com/quotes/quotesByUser?id=6310d724c2e50669e79b0fb5",
+          "protocol": "https",
+          "host": ["ngherardi-final-project-202207", "herokuapp", "com"],
+          "path": ["quotes", "quotesByUser"],
+          "query": [
+            {
+              "key": "id",
+              "value": "6310d724c2e50669e79b0fb5"
+            }
+          ]
         }
       },
       "response": []
