@@ -162,7 +162,7 @@ describe("Given the getQuotesByUser function from the quotesController", () => {
   describe("And when it's invoked but the data base throws an error", () => {
     test("Then next should be called with an error with message 'There was a problem loading the quotes'", async () => {
       const next = jest.fn();
-      const error = new Error("There was a problem loading the quotes");
+      const expectedError = new Error("There was a problem loading the quotes");
       UserModel.findById = jest.fn().mockResolvedValue(null);
 
       await getQuotesByUser(
@@ -171,7 +171,7 @@ describe("Given the getQuotesByUser function from the quotesController", () => {
         next as NextFunction
       );
 
-      expect(next).toHaveBeenCalledWith(error);
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });
