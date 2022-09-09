@@ -1,9 +1,10 @@
+import { error } from "console";
 import { NextFunction, Request, Response } from "express";
 import QuoteModel from "../../database/models/Quote";
 import UserModel from "../../database/models/User";
-import { getAllQuotes, getQuotesByUser } from "./quotesController";
+import { deleteQuote, getAllQuotes, getQuotesByUser } from "./quotesController";
 
-describe("Given a getAllQuotes function returned by the quotesController", () => {
+describe("Given the getAllQuotes function from the quotesController", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -76,7 +77,7 @@ describe("Given a getAllQuotes function returned by the quotesController", () =>
   });
 });
 
-describe("Given a getQuotesByUser function returned by the quotesController", () => {
+describe("Given the getQuotesByUser function from the quotesController", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -171,6 +172,69 @@ describe("Given a getQuotesByUser function returned by the quotesController", ()
       );
 
       expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+});
+
+describe("Given the delete quote function from the quotesController", () => {
+  const quoteId = "6310d724c2e50669e79b0fb5";
+  const request = { query: { id: quoteId } } as Partial<Request>;
+  const response = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  } as Partial<Response>;
+  const mockDelete = { mock: "mockDeleted" };
+  const next = jest.fn();
+  describe("When it is called with request with valid ID", () => {
+    QuoteModel.findByIdAndDelete = jest.fn().mockReturnValue(mockDelete);
+
+    test("Then the Quote model method findById should be called with the received id", async () => {
+      await deleteQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(QuoteModel.findByIdAndDelete).toHaveBeenCalledWith(quoteId);
+    });
+
+    test("Then the status method of the response should be called with 200", async () => {
+      const expectedStatus = 200;
+
+      await deleteQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.status).toHaveBeenCalledWith(expectedStatus);
+    });
+
+    test("And then the json method of the response should be called with 'Quote deleted correctly'", async () => {
+      const expectedResponse = "Quote deleted correctly";
+
+      await deleteQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.json).toHaveBeenCalledWith(expectedResponse);
+    });
+  });
+
+  describe("And when the id is not valid", () => {
+    test("Then next fucntion should be called with the error 'Couldn't delete the quote'", async () => {
+      QuoteModel.findByIdAndDelete = jest.fn().mockRejectedValue(error);
+      const expectedError = new Error("Couldn't delete the quote");
+
+      await deleteQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });
