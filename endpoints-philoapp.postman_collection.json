@@ -12,14 +12,14 @@
         "disableBodyPruning": true
       },
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
           "raw": ""
         },
         "url": {
-          "raw": "https://ngherardi-final-project-202207.herokuapp.com/quotes/all-quotes",
+          "raw": "https://ngherardi-final-project-202207.herokuapp.com/user/register",
           "protocol": "https",
           "host": ["ngherardi-final-project-202207", "herokuapp", "com"],
           "path": ["quotes", "all-quotes"]
