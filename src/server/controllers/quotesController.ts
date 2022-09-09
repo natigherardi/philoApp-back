@@ -32,7 +32,7 @@ export const getAllQuotes = async (
     next(errorFinding);
     return;
   }
-  res.status(200).json(quotes);
+  res.status(200).json({ quotes: { publicQuotes: quotes } });
 };
 
 export const getQuotesByUser = async (
@@ -50,7 +50,7 @@ export const getQuotesByUser = async (
       })
       .populate({ path: "quotesCreated", model: QuoteModel });
 
-    res.status(200).json({ quotesCreated, quotesFavorited });
+    res.status(200).json({ quotes: { quotesCreated, quotesFavorited } });
   } catch (error) {
     const quotesByUserError = new CustomError(
       404,

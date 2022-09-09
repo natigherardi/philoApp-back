@@ -31,13 +31,15 @@ describe("Given a getAllQuotes function returned by the quotesController", () =>
     });
 
     test("And then the json method of the response should be called with the quotes received", async () => {
+      const expectedReponse = { quotes: { publicQuotes: quotes } };
+
       await getAllQuotes(
         request as Request,
         response as Response,
         next as NextFunction
       );
 
-      expect(response.json).toHaveBeenCalledWith(quotes);
+      expect(response.json).toHaveBeenCalledWith(expectedReponse);
     });
   });
 
@@ -140,8 +142,10 @@ describe("Given a getQuotesByUser function returned by the quotesController", ()
         populate: jest.fn().mockResolvedValueOnce(userPopulated),
       });
       const expectedResponse = {
-        quotesCreated: userPopulated.quotesCreated,
-        quotesFavorited: userPopulated.quotesFavorited,
+        quotes: {
+          quotesCreated: userPopulated.quotesCreated,
+          quotesFavorited: userPopulated.quotesFavorited,
+        },
       };
 
       await getQuotesByUser(

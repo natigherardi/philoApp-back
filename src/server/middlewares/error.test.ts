@@ -4,7 +4,7 @@ import ErrorValidation from "../../utils/ErrorValidation";
 import { generalError, notFoundError } from "./error";
 
 describe("Given a not found Error middleware", () => {
-  describe("When it's called and it receives a response object", () => {
+  describe("When it's called and it receives a request object", () => {
     const request = {};
     const response = {
       status: jest.fn().mockReturnThis(),
