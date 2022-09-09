@@ -60,3 +60,23 @@ export const getQuotesByUser = async (
     next(quotesByUserError);
   }
 };
+
+export const deleteQuote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id: quoteId } = req.query;
+
+  try {
+    await QuoteModel.findByIdAndDelete(quoteId);
+    res.status(200).json("Quote deleted correctly");
+  } catch (error) {
+    const deleteError = new CustomError(
+      400,
+      "Error deleting quote",
+      "Couldn't delete the quote"
+    );
+    next(deleteError);
+  }
+};
