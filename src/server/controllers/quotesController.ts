@@ -49,7 +49,6 @@ export const getQuotesByUser = async (
         model: QuoteModel,
       })
       .populate({ path: "quotesCreated", model: QuoteModel });
-
     res.status(200).json({ quotes: { quotesCreated, quotesFavorited } });
   } catch (error) {
     const quotesByUserError = new CustomError(
@@ -73,9 +72,9 @@ export const deleteQuote = async (
     "Error deleting quote",
     "Couldn't delete the quote"
   );
-
   try {
     const quoteToDelete = await QuoteModel.findById(quoteId);
+
     if (quoteToDelete.owner !== userId) {
       next(deleteError);
       return;
