@@ -177,16 +177,27 @@ describe("Given the getQuotesByUser function from the quotesController", () => {
 });
 
 describe("Given the delete quote function from the quotesController", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const quoteId = "6310d724c2e50669e79b0fb5";
-  const request = { query: { id: quoteId } } as Partial<Request>;
+  const request = {
+    query: { id: quoteId },
+    body: { user: "123" },
+  } as Partial<Request>;
   const response = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
   } as Partial<Response>;
+  const expectedError = new Error("Couldn't delete the quote");
   const mockDelete = { mock: "mockDeleted" };
   const next = jest.fn();
-  describe("When it is called with request with valid ID", () => {
+  describe("When it is called with request with valid ID and the user is the owner of the quote", () => {
     QuoteModel.findByIdAndDelete = jest.fn().mockReturnValue(mockDelete);
+    QuoteModel.findById = jest
+      .fn()
+      .mockReturnValue({ id: "fakeQuote", owner: "123" });
 
     test("Then the Quote model method findById should be called with the received id", async () => {
       await deleteQuote(
@@ -220,13 +231,13 @@ describe("Given the delete quote function from the quotesController", () => {
       );
 
       expect(response.json).toHaveBeenCalledWith(expectedResponse);
+      expect(next).not.toHaveBeenCalled();
     });
   });
 
   describe("And when the id is not valid", () => {
     test("Then next fucntion should be called with the error 'Couldn't delete the quote'", async () => {
       QuoteModel.findByIdAndDelete = jest.fn().mockRejectedValue(error);
-      const expectedError = new Error("Couldn't delete the quote");
 
       await deleteQuote(
         request as Request,
@@ -234,6 +245,24 @@ describe("Given the delete quote function from the quotesController", () => {
         next as NextFunction
       );
 
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("And when the user is not the owner of the quote", () => {
+    test("Then next fucntion should be called with the error 'Couldn't delete the quote'", async () => {
+      QuoteModel.findById = jest
+        .fn()
+        .mockReturnValue({ id: "fakeQuote", owner: "000" });
+      QuoteModel.findByIdAndDelete = jest.fn();
+
+      await deleteQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(QuoteModel.findByIdAndDelete).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
