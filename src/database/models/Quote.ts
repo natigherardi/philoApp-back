@@ -3,7 +3,7 @@ import { model, Schema } from "mongoose";
 const quoteSchema = new Schema({
   textContent: { type: String, required: true, unique: true },
   author: { type: String, required: true },
-  owner: { type: Schema.Types.ObjectId, ref: "User" },
+  owner: { type: String },
   image: { type: String, required: true },
   favoritedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
   year: { type: Number },
