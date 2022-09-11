@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
+import CustomError from "../../../utils/CustomError";
 import imageBackUp from "./imageBackUp";
 
 jest.mock("fs");
-const uploadMocked = {};
+let uploadMocked = {};
 
 jest.mock("@supabase/supabase-js", () => ({
   ...jest.requireActual("@supabase/supabase-js"),
@@ -34,6 +35,9 @@ const response = {
 const next = jest.fn();
 
 describe("Given the imageBackUp middleware", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   describe("When it receives a request with a file", () => {
     test("Then it should call the enxt method", async () => {
       await imageBackUp(
@@ -44,6 +48,25 @@ describe("Given the imageBackUp middleware", () => {
 
       await expect(next).toHaveBeenCalled();
       await expect(next).not.toHaveBeenCalledWith(Error);
+    });
+  });
+
+  describe("And when the upload method returns an error", () => {
+    test("Then next should be called with an error with the message of the one received", async () => {
+      uploadMocked = { error: { message: "error" } };
+      const expectedError = new CustomError(
+        400,
+        "error",
+        "Error uploading the image"
+      );
+
+      await imageBackUp(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });
