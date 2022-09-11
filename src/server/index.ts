@@ -13,8 +13,12 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.use(express.json());
+
+app.use("/uploads", express.static("uploads"));
+
 app.use("/user", userRouter);
 app.use("/quotes", quotesRouter);
+
 app.use(notFoundError);
 app.use(generalError);
 
