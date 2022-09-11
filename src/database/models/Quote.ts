@@ -5,6 +5,7 @@ const quoteSchema = new Schema({
   author: { type: String, required: true },
   owner: { type: String },
   image: { type: String, required: true },
+  backUpImage: { type: String },
   favoritedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
   year: { type: Number },
   school: { type: String },
