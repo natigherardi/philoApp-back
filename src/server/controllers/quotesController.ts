@@ -91,12 +91,13 @@ export const createQuote = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { textContent, author, image, year, school, book } = req.body;
+  const { textContent, author, image, backUpImage, year, school, book } =
+    req.body;
   const { id: userId } = req.query;
   const createError = new CustomError(
     400,
     "Error creating quote",
-    "We couldn't delete the quote"
+    "We couldn't create the quote"
   );
 
   try {
@@ -106,10 +107,10 @@ export const createQuote = async (
       owner: userId,
       book,
       image,
+      backUpImage,
       school,
       year,
     });
-
     const userOwner = await UserModel.findById(userId);
     userOwner.quotesCreated.push(newQuote.id);
     await userOwner.save();
