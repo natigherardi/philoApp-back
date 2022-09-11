@@ -2,7 +2,12 @@ import { error } from "console";
 import { NextFunction, Request, Response } from "express";
 import QuoteModel from "../../database/models/Quote";
 import UserModel from "../../database/models/User";
-import { deleteQuote, getAllQuotes, getQuotesByUser } from "./quotesController";
+import {
+  createQuote,
+  deleteQuote,
+  getAllQuotes,
+  getQuotesByUser,
+} from "./quotesController";
 
 describe("Given the getAllQuotes function from the quotesController", () => {
   afterEach(() => {
@@ -263,6 +268,100 @@ describe("Given the delete quote function from the quotesController", () => {
       );
 
       expect(QuoteModel.findByIdAndDelete).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+});
+
+describe("Given the create Quote function from the QuotesController", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+  const mockUserId = "testId";
+  const mockUser = new UserModel({
+    name: "test name",
+    username: "test username",
+    password: "test password",
+    quotesCreated: [{ id: "1" }],
+    quotesFavorited: [],
+  });
+  const mockNewQuote = {
+    textContent: "test",
+    author: "test",
+    owner: mockUserId,
+    book: "test",
+    image: "test",
+    school: "test",
+    year: 1,
+  };
+
+  const request = {
+    query: { id: mockUserId },
+    body: mockNewQuote,
+  } as Partial<Request>;
+  const response = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  } as Partial<Response>;
+  const next = jest.fn();
+
+  describe("When it is called with a request with valid user id and quote data", () => {
+    const mockCreate = jest.fn().mockResolvedValue(mockNewQuote);
+
+    mockUser.save = jest.fn();
+
+    test("Then the create method of the Quote model should be called with the data received", async () => {
+      QuoteModel.create = mockCreate;
+      UserModel.findById = jest.fn().mockResolvedValue(mockUser);
+
+      await createQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(mockCreate).toHaveBeenCalledWith(mockNewQuote);
+    });
+
+    test("And then the status mehtod of the response should be called with 201", async () => {
+      const expectedStatus = 201;
+      QuoteModel.create = mockCreate;
+      UserModel.findById = jest.fn().mockResolvedValueOnce(mockUser);
+
+      await createQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.status).toHaveBeenCalledWith(expectedStatus);
+    });
+
+    test("And then the json method of the response should be called with the quote created", async () => {
+      QuoteModel.create = mockCreate;
+      UserModel.findById = jest.fn().mockResolvedValueOnce(mockUser);
+
+      await createQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.json).toHaveBeenCalledWith(mockNewQuote);
+    });
+  });
+
+  describe("And when it is called and mogoose responds qith an error", () => {
+    test("Then next should ba called with the error received", async () => {
+      const expectedError = new Error("We couldn't delete the quote");
+      QuoteModel.create = jest.fn().mockRejectedValue(expectedError);
+
+      await createQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
       expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
