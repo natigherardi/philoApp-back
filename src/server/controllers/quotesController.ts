@@ -85,3 +85,38 @@ export const deleteQuote = async (
     next(deleteError);
   }
 };
+
+export const createQuote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { textContent, author, image, year, school, book } = req.body;
+  const { id: userId } = req.query;
+  const createError = new CustomError(
+    400,
+    "Error creating quote",
+    "We couldn't delete the quote"
+  );
+
+  try {
+    const newQuote = await QuoteModel.create({
+      textContent,
+      author,
+      owner: userId,
+      book,
+      image,
+      school,
+      year,
+    });
+
+    const userOwner = await UserModel.findById(userId);
+    userOwner.quotesCreated.push(newQuote.id);
+    await userOwner.save();
+
+    res.status(201).json(newQuote);
+  } catch (error) {
+    createError.privateMessage = error.message;
+    next(createError);
+  }
+};
