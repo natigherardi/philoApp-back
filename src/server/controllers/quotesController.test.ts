@@ -353,7 +353,7 @@ describe("Given the create Quote function from the QuotesController", () => {
 
   describe("And when it is called and mogoose responds qith an error", () => {
     test("Then next should ba called with the error received", async () => {
-      const expectedError = new Error("We couldn't delete the quote");
+      const expectedError = new Error("We couldn't create the quote");
       QuoteModel.create = jest.fn().mockRejectedValue(expectedError);
 
       await createQuote(
