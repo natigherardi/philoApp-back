@@ -117,6 +117,7 @@ export const createQuote = async (
     res.status(201).json(newQuote);
   } catch (error) {
     createError.privateMessage = error.message;
+
     next(createError);
   }
 };

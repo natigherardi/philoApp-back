@@ -4,6 +4,8 @@ export interface UserLogin {
 }
 export interface UserFullData extends UserLogin {
   name: string;
+  username: string;
+  password: string;
   quotesFavorited?: string[];
   quotesCreated?: string[];
   id: string;
