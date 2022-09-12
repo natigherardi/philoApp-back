@@ -436,7 +436,7 @@ describe("Given a getQuoteById from the quotes controller", () => {
   });
 
   describe("And when it's called and the method findById returns an error", () => {
-    test("Then nexst should be called with the error received", async () => {
+    test("Then next should be called with the error message received", async () => {
       const rejectError = new Error("Mock error message");
       const expectedError = new CustomError(
         400,

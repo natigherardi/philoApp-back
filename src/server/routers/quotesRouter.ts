@@ -5,6 +5,7 @@ import {
   createQuote,
   deleteQuote,
   getAllQuotes,
+  getQuoteById,
   getQuotesByUser,
 } from "../controllers/quotesController";
 import authUser from "../middlewares/authUser";
@@ -27,5 +28,6 @@ quotesRouter.post(
   imageBackUp,
   createQuote
 );
+quotesRouter.get("/quote/:id", getQuoteById);
 
 export default quotesRouter;
