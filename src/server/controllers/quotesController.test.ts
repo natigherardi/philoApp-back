@@ -377,7 +377,7 @@ describe("Given the create Quote function from the QuotesController", () => {
 
 describe("Given a getQuoteById from the quotes controller", () => {
   const request = {
-    query: { id: "test" },
+    params: { id: "test" },
   } as Partial<Request>;
   const response = {
     status: jest.fn().mockReturnThis(),

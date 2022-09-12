@@ -128,7 +128,7 @@ export const getQuoteById = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id: quoteId } = req.query;
+  const { id: quoteId } = req.params;
   const getQuoteError = new CustomError(
     400,
     "Error getting the quote",
