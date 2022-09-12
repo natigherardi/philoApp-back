@@ -2,6 +2,7 @@ import { error } from "console";
 import { NextFunction, Request, Response } from "express";
 import QuoteModel from "../../database/models/Quote";
 import UserModel from "../../database/models/User";
+import CustomError from "../../utils/CustomError";
 import {
   createQuote,
   deleteQuote,
@@ -412,6 +413,45 @@ describe("Given a getQuoteById from the quotes controller", () => {
       );
 
       expect(response.json).toHaveBeenCalledWith(expectedResponse);
+    });
+  });
+
+  describe("And when it's called and it receives an invalid quote ID", () => {
+    test("Then nexst should be called with the get quote error", async () => {
+      const expectedError = new CustomError(
+        400,
+        "Error getting the quote",
+        "We couldn't get the quote"
+      );
+      QuoteModel.findById = jest.fn().mockResolvedValue(null);
+
+      await getQuoteById(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("And when it's called and the method findById returns an error", () => {
+    test("Then nexst should be called with the error received", async () => {
+      const rejectError = new Error("Mock error message");
+      const expectedError = new CustomError(
+        400,
+        "Mock error message",
+        "We couldn't get the quote"
+      );
+      QuoteModel.findById = jest.fn().mockRejectedValue(rejectError);
+
+      await getQuoteById(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });
