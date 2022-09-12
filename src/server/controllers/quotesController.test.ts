@@ -2,11 +2,13 @@ import { error } from "console";
 import { NextFunction, Request, Response } from "express";
 import QuoteModel from "../../database/models/Quote";
 import UserModel from "../../database/models/User";
+import CustomError from "../../utils/CustomError";
 import {
   createQuote,
   deleteQuote,
   getAllQuotes,
   getQuotesByUser,
+  getQuoteById,
 } from "./quotesController";
 
 describe("Given the getAllQuotes function from the quotesController", () => {
@@ -241,6 +243,9 @@ describe("Given the delete quote function from the quotesController", () => {
   });
 
   describe("And when the id is not valid", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     test("Then next fucntion should be called with the error 'Couldn't delete the quote'", async () => {
       QuoteModel.findByIdAndDelete = jest.fn().mockRejectedValue(error);
 
@@ -255,6 +260,9 @@ describe("Given the delete quote function from the quotesController", () => {
   });
 
   describe("And when the user is not the owner of the quote", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     test("Then next fucntion should be called with the error 'Couldn't delete the quote'", async () => {
       QuoteModel.findById = jest
         .fn()
@@ -357,6 +365,87 @@ describe("Given the create Quote function from the QuotesController", () => {
       QuoteModel.create = jest.fn().mockRejectedValue(expectedError);
 
       await createQuote(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+});
+
+describe("Given a getQuoteById from the quotes controller", () => {
+  const request = {
+    params: { id: "test" },
+  } as Partial<Request>;
+  const response = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  } as Partial<Response>;
+  const next = jest.fn();
+
+  describe("When it is called and it receives a valid quote id", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    test("Then the status method of the response should be called with 200", async () => {
+      const expectedStatus = 200;
+      QuoteModel.findById = jest.fn().mockResolvedValue("mockQuote");
+
+      await getQuoteById(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.status).toHaveBeenCalledWith(expectedStatus);
+    });
+
+    test("Then the status method of the response should be called with 200", async () => {
+      const expectedResponse = { quote: "mockQuote" };
+      QuoteModel.findById = jest.fn().mockResolvedValue("mockQuote");
+
+      await getQuoteById(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.json).toHaveBeenCalledWith(expectedResponse);
+    });
+  });
+
+  describe("And when it's called and it receives an invalid quote ID", () => {
+    test("Then nexst should be called with the get quote error", async () => {
+      const expectedError = new CustomError(
+        400,
+        "Error getting the quote",
+        "We couldn't get the quote"
+      );
+      QuoteModel.findById = jest.fn().mockResolvedValue(null);
+
+      await getQuoteById(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("And when it's called and the method findById returns an error", () => {
+    test("Then next should be called with the error message received", async () => {
+      const rejectError = new Error("Mock error message");
+      const expectedError = new CustomError(
+        400,
+        "Mock error message",
+        "We couldn't get the quote"
+      );
+      QuoteModel.findById = jest.fn().mockRejectedValue(rejectError);
+
+      await getQuoteById(
         request as Request,
         response as Response,
         next as NextFunction
