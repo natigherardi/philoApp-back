@@ -7,6 +7,7 @@ import {
   deleteQuote,
   getAllQuotes,
   getQuotesByUser,
+  getQuoteById,
 } from "./quotesController";
 
 describe("Given the getAllQuotes function from the quotesController", () => {
@@ -241,6 +242,9 @@ describe("Given the delete quote function from the quotesController", () => {
   });
 
   describe("And when the id is not valid", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     test("Then next fucntion should be called with the error 'Couldn't delete the quote'", async () => {
       QuoteModel.findByIdAndDelete = jest.fn().mockRejectedValue(error);
 
@@ -255,6 +259,9 @@ describe("Given the delete quote function from the quotesController", () => {
   });
 
   describe("And when the user is not the owner of the quote", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     test("Then next fucntion should be called with the error 'Couldn't delete the quote'", async () => {
       QuoteModel.findById = jest
         .fn()
@@ -363,6 +370,48 @@ describe("Given the create Quote function from the QuotesController", () => {
       );
 
       expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+});
+
+describe("Given a getQuoteById from the quotes controller", () => {
+  const request = {
+    query: { id: "test" },
+  } as Partial<Request>;
+  const response = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  } as Partial<Response>;
+  const next = jest.fn();
+
+  describe("When it is called and it receives a valid quote id", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    test("Then the status method of the response should be called with 200", async () => {
+      const expectedStatus = 200;
+      QuoteModel.findById = jest.fn().mockResolvedValue("mockQuote");
+
+      await getQuoteById(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.status).toHaveBeenCalledWith(expectedStatus);
+    });
+
+    test("Then the status method of the response should be called with 200", async () => {
+      const expectedResponse = { quote: "mockQuote" };
+      QuoteModel.findById = jest.fn().mockResolvedValue("mockQuote");
+
+      await getQuoteById(
+        request as Request,
+        response as Response,
+        next as NextFunction
+      );
+
+      expect(response.json).toHaveBeenCalledWith(expectedResponse);
     });
   });
 });

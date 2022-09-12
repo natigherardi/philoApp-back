@@ -122,3 +122,28 @@ export const createQuote = async (
     next(createError);
   }
 };
+
+export const getQuoteById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id: quoteId } = req.query;
+  const getQuoteError = new CustomError(
+    400,
+    "Error getting the quote",
+    "We couldn't get the quote"
+  );
+
+  try {
+    const quote = await QuoteModel.findById(quoteId);
+    if (!quote) {
+      next(getQuoteError);
+      return;
+    }
+    res.status(200).json({ quote });
+  } catch (error) {
+    getQuoteError.privateMessage = error.message;
+    next(getQuoteError);
+  }
+};
