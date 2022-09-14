@@ -89,49 +89,47 @@ describe("Given the getQuotesByUser function from the quotesController", () => {
     jest.clearAllMocks();
   });
   const request = {
-    query: { id: "6310d724c2e50669e79b0fb5" },
+    query: { id: "testId" },
   } as Partial<Request>;
   const response = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
   } as Partial<Response>;
-  describe("When it's invoked and it receives a request and the response is succesfull", () => {
+  describe("When it's invoked and it receives a request and the user received is found and has quotes", () => {
     const next = () => {};
     const userPopulated = {
-      name: "patata",
-      username: "patata",
+      name: "mockUser",
+      username: "mockUser",
       quotesCreated: [
         {
-          textContent: "I think, therefore I am",
-          author: "René Descartes",
-          owner: "6310d724c2e50669e79b0fb5",
-          image:
-            "https://www.alejandradeargos.com/images/filosofos/descartes/Rene_Descartes.jpg",
-          year: 1650,
-          school: "Cartesianism",
-          book: "Discourse on the Method of Rightly Conducting One's Reason and of Seeking Truth in the Sciences",
-          favoritedBy: ["6310d724c2e50669e79b0fb5"],
-          id: "6319125bd048c740c65fa9a4",
+          textContent: "",
+          author: "",
+          owner: "testId",
+          image: "",
+          year: 0,
+          school: "",
+          book: "",
+          favoritedBy: [""],
+          id: "",
         },
       ],
       quotesFavorited: [
         {
-          textContent: "I think, therefore I am",
-          author: "René Descartes",
-          owner: "6310d724c2e50669e79b0fb5",
-          image:
-            "https://www.alejandradeargos.com/images/filosofos/descartes/Rene_Descartes.jpg",
-          year: 1650,
-          school: "Cartesianism",
-          book: "Discourse on the Method of Rightly Conducting One's Reason and of Seeking Truth in the Sciences",
-          favoritedBy: ["6310d724c2e50669e79b0fb5"],
-          id: "6319125bd048c740c65fa9a4",
+          textContent: "",
+          author: "",
+          owner: "",
+          image: "",
+          year: 0,
+          school: "",
+          book: "",
+          favoritedBy: ["testId"],
+          id: "",
         },
       ],
-      id: "6310d724c2e50669e79b0fb5",
+      id: "testId",
     };
 
-    test("Then if the user is found and it has quotes the status method should be called with 200", async () => {
+    test("Then the status method of the repsonseshould be called with 200", async () => {
       UserModel.findById = jest.fn().mockReturnThis();
       UserModel.populate = jest.fn().mockReturnValue({
         populate: jest.fn().mockResolvedValueOnce(userPopulated),
@@ -142,6 +140,7 @@ describe("Given the getQuotesByUser function from the quotesController", () => {
         response as Response,
         next as NextFunction
       );
+
       expect(response.status).toHaveBeenCalledWith(200);
     });
     test("And then the json method of the response should be called with the quotes received", async () => {
