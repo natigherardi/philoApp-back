@@ -64,27 +64,17 @@ export const loginUser = async (
     return;
   }
   const [user] = foundUser;
-  try {
-    const isPassWordCorrect = await hashCompare(
-      loggedUser.password,
-      user.password
-    );
-    const incorrectPasswordError = new CustomError(
-      403,
-      "Password invalid",
-      "User or password not valid"
-    );
-    if (!isPassWordCorrect) {
-      next(incorrectPasswordError);
-      return;
-    }
-  } catch (error) {
-    const passwordCheckError = new CustomError(
-      403,
-      `name: ${(error as Error).name}; message:  ${(error as Error).message}`,
-      "User or password not valid"
-    );
-    next(passwordCheckError);
+  const isPassWordCorrect = await hashCompare(
+    loggedUser.password,
+    user.password
+  );
+  const incorrectPasswordError = new CustomError(
+    403,
+    "Password invalid",
+    "User or password not valid"
+  );
+  if (!isPassWordCorrect) {
+    next(incorrectPasswordError);
     return;
   }
   const jwtPayload: JwtPayload = {
