@@ -3,7 +3,7 @@ import UserModel from "../../database/models/User";
 import { UserLogin } from "../../interfaces/User";
 import { loginUser, registerUser } from "./usersController";
 
-let mockResultHashCompare: boolean | Error = true;
+let mockResultHashCompare = true;
 
 jest.mock("../../utils/authenticate/authenticate", () => ({
   ...jest.requireActual("../../utils/authenticate/authenticate"),
@@ -13,15 +13,11 @@ jest.mock("../../utils/authenticate/authenticate", () => ({
   createToken: () => "mockToken",
 }));
 
-afterEach(() => {
-  jest.clearAllMocks();
-});
-
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
 describe("When the registerUser function is called", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe("When it's invoked, it receives a request object and the response is succesfull", () => {
     const dataUser = { name: "", username: "", password: "123" };
     const request = { body: dataUser } as Request;
@@ -78,22 +74,21 @@ describe("When the loginUser function is called", () => {
     jest.clearAllMocks();
   });
   const mockedUser: UserLogin = { username: "Pablo", password: "123" };
-  let res: Partial<Response>;
   const mockedUserFound = { username: "Natalia", password: "123", id: "" };
   const request = { body: mockedUser } as Request;
   const response = {};
 
-  let next: NextFunction;
-  beforeEach(async () => {
-    next = jest.fn();
-    res = {
+  const next = jest.fn();
+
+  describe("And when it receives a request with a valid username 'Natalia' and password '123'", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    UserModel.find = jest.fn().mockResolvedValue([mockedUserFound]);
+    const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     } as Partial<Response>;
-  });
-
-  describe("And when it receives a request with a valid username 'Natalia' and password '123'", () => {
-    UserModel.find = jest.fn().mockResolvedValue([mockedUserFound]);
 
     test("Then the status method of the response should be called with 200", async () => {
       const expectedStatus = 200;
@@ -122,8 +117,8 @@ describe("When the loginUser function is called", () => {
 
   describe("And when it receives an invalid username that is not found", () => {
     const expectedError = new Error("User or password not valid");
-    beforeEach(() => {
-      next = jest.fn() as NextFunction;
+    afterEach(() => {
+      jest.clearAllMocks();
     });
 
     test("Then next should be called with an error 'User not found'", async () => {
@@ -140,6 +135,10 @@ describe("When the loginUser function is called", () => {
   });
 
   describe("And when the find method returns an error", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
     test("Then next should be called with an error 'User not found'", async () => {
       const expectedErrorCatch = new Error("Error finding");
 
@@ -156,6 +155,9 @@ describe("When the loginUser function is called", () => {
   });
 
   describe("And when the user is found but the password entered doesn't match", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     test("Then next should be called with passsword check error", async () => {
       UserModel.find = jest.fn().mockResolvedValue([mockedUser]);
       mockResultHashCompare = false;
